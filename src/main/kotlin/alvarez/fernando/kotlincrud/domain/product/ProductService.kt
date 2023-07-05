@@ -15,16 +15,16 @@ class ProductService(val productRepository: ProductRepository) {
         return Product.mapById(this.productRepository.findAllAvailableById(ids))
     }
 
-    fun getInnexistentProducts(wantedIds: Collection<UUID>, productIdMap: Map<UUID, Product> = this.mapAllAvailableById(wantedIds)): MutableSet<UUID> {
-        val innexistentProductIds = mutableSetOf<UUID>()
+    fun getInexistentProducts(wantedIds: Collection<UUID>, productIdMap: Map<UUID, Product> = this.mapAllAvailableById(wantedIds)): MutableSet<UUID> {
+        val inexistentProductIds = mutableSetOf<UUID>()
 
         for (wantedId in wantedIds) {
             if (productIdMap[wantedId] == null) {
-                innexistentProductIds.add(wantedId)
+                inexistentProductIds.add(wantedId)
             }
         }
 
-        return innexistentProductIds;
+        return inexistentProductIds;
     }
 
     fun subtractStockQuantities(purchases: Collection<PurchasedProduct>) {

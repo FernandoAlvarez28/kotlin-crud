@@ -28,9 +28,9 @@ class PurchaseService(
         val selectedProductsIds = newPurchase.getSelectedProductsIds()
         val productIdMap = this.productService.mapAllAvailableById(selectedProductsIds)
 
-        val innexistentProductIds = this.productService.getInnexistentProducts(selectedProductsIds, productIdMap)
-        if (innexistentProductIds.isNotEmpty()) {
-            throw InvalidInputException("The following products doesn't exists or is not available: $innexistentProductIds")
+        val inexistentProductIds = this.productService.getInexistentProducts(selectedProductsIds, productIdMap)
+        if (inexistentProductIds.isNotEmpty()) {
+            throw InvalidInputException("The following products doesn't exists or is not available: $inexistentProductIds")
         }
 
         val createdPurchase = Purchase(purchasedProducts = mutableListOf())
