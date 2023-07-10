@@ -1,0 +1,216 @@
+{
+  "uuid": "e38df468-4929-4ccb-8a01-70e171e80f04",
+  "lastMigration": 27,
+  "name": "Users api",
+  "endpointPrefix": "api/v1",
+  "latency": 150,
+  "port": 8180,
+  "hostname": "",
+  "folders": [],
+  "routes": [
+    {
+      "uuid": "9dc4986e-e0d6-4c96-a4b7-ec84b863681c",
+      "type": "http",
+      "documentation": "List of users",
+      "method": "get",
+      "endpoint": "users",
+      "responses": [
+        {
+          "uuid": "8a2b721c-79b2-467c-9790-75776cd420ee",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Return all users without filter",
+          "headers": [],
+          "bodyType": "DATABUCKET",
+          "filePath": "",
+          "databucketID": "jvqz",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "params",
+              "modifier": "username",
+              "value": "",
+              "invert": false,
+              "operator": "empty_array"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true
+        },
+        {
+          "uuid": "46486904-30aa-4bfd-89c8-4f71fc7d847d",
+          "body": "[\n  {{data '5zf1'}}\n]",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Return only the user \"Temp O'Rary\" by filtering by \"username=temp orary\"",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "query",
+              "modifier": "username",
+              "value": "temp orary",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false
+        },
+        {
+          "uuid": "70a5c6cd-589f-485e-877a-d6b944f75087",
+          "body": "",
+          "latency": 0,
+          "statusCode": 204,
+          "label": "When filtering by any other \"username\"",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "query",
+              "modifier": "username",
+              "value": "^(?:(?!temp orary).)*$",
+              "invert": false,
+              "operator": "regex"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
+    },
+    {
+      "uuid": "c86fe669-3826-41f2-9f3d-3e2771d6d5ce",
+      "type": "http",
+      "documentation": "Get user by ID",
+      "method": "get",
+      "endpoint": "users/:userId",
+      "responses": [
+        {
+          "uuid": "db8ca7c0-e2c6-49c5-9527-6bcf810111f9",
+          "body": "{{data '5zf1'}}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Return the user \"Temp O'Rary\" when route param is \"0787f0bc-46df-4d15-abe9-c9c3e6dcfe21\"",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "params",
+              "modifier": ":userId",
+              "value": "0787f0bc-46df-4d15-abe9-c9c3e6dcfe21",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true
+        },
+        {
+          "uuid": "1f39f9d1-5111-41a5-bf10-4992f76b75a5",
+          "body": "",
+          "latency": 0,
+          "statusCode": 404,
+          "label": "Return 404 when route param isn't \"0787f0bc-46df-4d15-abe9-c9c3e6dcfe21\"",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "params",
+              "modifier": "userId",
+              "value": "^(?!.*0787f0bc-46df-4d15-abe9-c9c3e6dcfe21).*$",
+              "invert": false,
+              "operator": "regex"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
+    }
+  ],
+  "rootChildren": [
+    {
+      "type": "route",
+      "uuid": "9dc4986e-e0d6-4c96-a4b7-ec84b863681c"
+    },
+    {
+      "type": "route",
+      "uuid": "c86fe669-3826-41f2-9f3d-3e2771d6d5ce"
+    }
+  ],
+  "proxyMode": false,
+  "proxyHost": "",
+  "proxyRemovePrefix": false,
+  "tlsOptions": {
+    "enabled": false,
+    "type": "CERT",
+    "pfxPath": "",
+    "certPath": "",
+    "keyPath": "",
+    "caPath": "",
+    "passphrase": ""
+  },
+  "cors": true,
+  "headers": [
+    {
+      "key": "Content-Type",
+      "value": "application/json"
+    }
+  ],
+  "proxyReqHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "proxyResHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "data": [
+    {
+      "uuid": "bd61654d-011b-48da-b4ea-c724bf565256",
+      "id": "jvqz",
+      "name": "Users",
+      "documentation": "",
+      "value": "[\n  {\n    \"id\": \"0787f0bc-46df-4d15-abe9-c9c3e6dcfe21\",\n    \"name\": \"Temp O'Rary\",\n    \"username\": \"temp orary\",\n    \"password\": \"withoutPassword\"\n  },\n  {{#repeat 5}}\n    {\n      \"id\": \"{{faker 'datatype.uuid'}}\",\n      \"name\": \"{{faker 'name.findName'}}\",\n      \"username\": \"{{faker 'internet.userName'}}\",\n      \"password\": \"{{faker 'internet.password'}}\"\n    }\n  {{/repeat}}\n]"
+    },
+    {
+      "uuid": "dfc4621b-d121-44ef-8860-a19b729aef23",
+      "id": "5zf1",
+      "name": "User 1",
+      "documentation": "",
+      "value": "{\n  \"id\": \"0787f0bc-46df-4d15-abe9-c9c3e6dcfe21\",\n  \"name\": \"Temp O'Rary\",\n  \"username\": \"temp orary\",\n  \"password\": \"withoutPassword\"\n}"
+    }
+  ]
+}

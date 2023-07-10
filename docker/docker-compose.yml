@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+
+  mockoon:
+    image: mockoon/cli
+    command: -p 8180 -d /config/users-api.json
+    networks:
+      - mockoon
+    ports:
+      - "8180:8180"
+    volumes:
+      - ./mockoon:/config
+
+networks:
+  mockoon:
+    driver: bridge

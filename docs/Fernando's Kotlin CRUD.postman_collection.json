@@ -6,6 +6,58 @@
 	},
 	"item": [
 		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const status = pm.response.code;",
+									"",
+									"if (status == 200) {",
+									"    const jwtToken = pm.response.headers.get(\"Authorization\");",
+									"    pm.environment.set(\"jwtToken\", jwtToken);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"temp orary\",\n    \"password\": \"withoutPassword\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{appUrl}}/api/v1/login",
+							"host": [
+								"{{appUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Purchases",
 			"item": [
 				{
@@ -14,12 +66,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/v1/purchases",
-							"protocol": "http",
+							"raw": "{{appUrl}}/api/v1/purchases",
 							"host": [
-								"localhost"
+								"{{appUrl}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"v1",
@@ -35,12 +85,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/v1/purchases/7b36aa85-4152-48b9-aded-f4379b1b0cbd",
-							"protocol": "http",
+							"raw": "{{appUrl}}/api/v1/purchases/7b36aa85-4152-48b9-aded-f4379b1b0cbd",
 							"host": [
-								"localhost"
+								"{{appUrl}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"v1",
@@ -58,7 +106,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"selectedProducts\": [\n        {\n            \"id\": \"22193d59-389e-4742-8245-ca05cae70ec1\",\n            \"quantity\": 2\n        },\n        {\n            \"id\": \"961f6680-a6a7-46f0-8f16-13e0dcb271f1\",\n            \"quantity\": 100\n        }\n    ]\n}",
+							"raw": "{\n    \"selectedProducts\": [\n        {\n            \"id\": \"84b18f27-dab0-46f2-8aff-e78e99b52c7e\",\n            \"quantity\": 2\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -66,12 +114,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/v1/purchases",
-							"protocol": "http",
+							"raw": "{{appUrl}}/api/v1/purchases",
 							"host": [
-								"localhost"
+								"{{appUrl}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"v1",
@@ -92,12 +138,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/v1/products",
-							"protocol": "http",
+							"raw": "{{appUrl}}/api/v1/products",
 							"host": [
-								"localhost"
+								"{{appUrl}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"v1",
@@ -108,6 +152,93 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Users (Mockoon)",
+			"item": [
+				{
+					"name": "Get Users",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{mockoonUrl}}/api/v1/users",
+							"host": [
+								"{{mockoonUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "temp orary",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Users by ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{mockoonUrl}}/api/v1/users/0787f0bc-46df-4d15-abe9-c9c3e6dcfe21",
+							"host": [
+								"{{mockoonUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"0787f0bc-46df-4d15-abe9-c9c3e6dcfe21"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{jwtToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }
