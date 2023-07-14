@@ -1,12 +1,14 @@
 package alvarez.fernando.kotlincrud.domain.product
 
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
+import org.springframework.data.annotation.Id
+import org.springframework.data.relational.core.mapping.Table
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import java.math.BigDecimal
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
-@Entity
+@Table
 class Product (
 
     @Id
@@ -23,12 +25,17 @@ class Product (
     }
 
     companion object {
+        @Deprecated("Use Flux#collectMap instead")
         fun mapById(products: Collection<Product>): Map<UUID, Product> {
             val map = HashMap<UUID, Product>(products.size)
             for (product in products) {
                 map[product.id] = product
             }
             return map;
+        }
+
+        fun mapById(products: Flux<Product>): Mono<MutableMap<UUID, Product>> {
+            return products.collectMap { product -> product?.id }
         }
     }
 }

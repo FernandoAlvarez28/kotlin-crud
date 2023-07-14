@@ -4,7 +4,6 @@ import alvarez.fernando.kotlincrud.domain.purchase.Purchase
 import alvarez.fernando.kotlincrud.extensions.toEpochMilli
 import java.math.BigDecimal
 import java.util.*
-import kotlin.collections.ArrayList
 
 data class PurchaseApiOutput (
         val id: UUID,
@@ -21,6 +20,7 @@ data class PurchaseApiOutput (
     )
 
     companion object {
+        @Deprecated("Use Flux#map instead")
         fun from(purchases: Collection<Purchase>): List<PurchaseApiOutput> {
             val outputs = ArrayList<PurchaseApiOutput>(purchases.size)
             for (purchase in purchases) {

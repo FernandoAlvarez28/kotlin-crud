@@ -19,6 +19,7 @@ data class ProductApiOutput(
     )
 
     companion object {
+        @Deprecated("Use Flux#map instead")
         fun from(products: Collection<Product>): List<ProductApiOutput> {
             val outputs = ArrayList<ProductApiOutput>(products.size)
             for (purchasedProduct in products) {

@@ -12,6 +12,14 @@ services:
     volumes:
       - ./mockoon:/config
 
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "blue-elephant" #Postgres's logo is an elephant :P
+    ports:
+      - "65432:5432" #Different port to not conflict with any possible real/default Postgres installation
+
 networks:
   mockoon:
     driver: bridge

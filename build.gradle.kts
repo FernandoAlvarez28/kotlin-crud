@@ -29,11 +29,15 @@ dependencies {
 	implementation("com.auth0:java-jwt:4.4.0")
 	implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.flywaydb:flyway-core")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	runtimeOnly("com.h2database:h2")
+	runtimeOnly("io.r2dbc:r2dbc-postgresql:0.8.13.RELEASE")
+	runtimeOnly("io.r2dbc:r2dbc-pool")
+	runtimeOnly("org.postgresql:postgresql") {
+		because("Flyway needs the blocking JDBC driver to work; it doesn't work with R2DBC out of the box: https://www.baeldung.com/spring-r2dbc-flyway")
+	}
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.amqp:spring-rabbit-test")
 }

@@ -1,14 +1,16 @@
 CREATE TABLE kotlin_crud.PRODUCT (
-	  id UUID DEFAULT RANDOM_UUID() PRIMARY KEY
+	  id UUID DEFAULT GEN_RANDOM_UUID() PRIMARY KEY
 	, name VARCHAR NOT NULL
 	, unit_price NUMERIC NOT NULL
 	, available_quantity INT NOT NULL
-	, added_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP()
+	, added_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE kotlin_crud.PURCHASED_PRODUCT (
-	  purchase_id UUID
-	, product_id UUID
+	  purchase_id UUID NOT NULL
+	, product_id UUID NOT NULL
+	, product_name VARCHAR NOT NULL
+	, unit_price NUMERIC NOT NULL
 	, quantity INT NOT NULL
 	, paid_price NUMERIC NOT NULL
 	, CONSTRAINT purchased_product_purchase_id_fk FOREIGN KEY (purchase_id) REFERENCES kotlin_crud.PURCHASE (id)

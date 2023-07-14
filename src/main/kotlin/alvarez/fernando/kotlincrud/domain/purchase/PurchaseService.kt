@@ -1,57 +1,87 @@
 package alvarez.fernando.kotlincrud.domain.purchase
 
+import alvarez.fernando.kotlincrud.domain.product.Product
 import alvarez.fernando.kotlincrud.domain.product.ProductService
 import alvarez.fernando.kotlincrud.exception.InvalidInputException
 import org.springframework.stereotype.Service
+import org.springframework.util.CollectionUtils
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import java.util.*
 
 @Service
 class PurchaseService(
-        val purchaseRepository: PurchaseRepository,
-        val productService: ProductService
+        private val purchaseRepository: PurchaseRepository,
+        private val purchaseInsertRepository: PurchaseInsertRepository,
+        private val purchasedProductRepository: PurchasedProductRepository,
+        private val purchasedProductInsertRepository: PurchasedProductInsertRepository,
+        private val productService: ProductService
 ) {
 
-    fun findAllPurchases(): List<Purchase> {
+    fun findAllPurchases(): Flux<Purchase> {
         return this.purchaseRepository.findAll()
     }
 
-    fun findPurchaseById(id: UUID): Optional<Purchase> {
+    fun findPurchaseById(id: UUID): Mono<Purchase> {
         return this.purchaseRepository.findById(id)
     }
 
-    @Throws(InvalidInputException::class)
-    fun createPurchase(newPurchase: NewPurchase): Purchase {
-        if (newPurchase.selectedProducts.isEmpty()) {
-            throw InvalidInputException("No product selected")
+    fun getPurchasedProducts(purchase: Purchase): Flux<PurchasedProduct> {
+        return this.purchasedProductRepository.findAllByPurchase(purchase.id)
+    }
+
+    fun createPurchase(newPurchase: NewPurchase): Mono<Purchase> {
+        val selectedProductsIds: Set<UUID> = newPurchase.getSelectedProductsIds()
+        if (selectedProductsIds.isEmpty()) {
+            return Mono.error(InvalidInputException("No product selected"))
         }
 
-        val selectedProductsIds = newPurchase.getSelectedProductsIds()
-        val productIdMap = this.productService.mapAllAvailableById(selectedProductsIds)
+        val productIdMapMono: Mono<MutableMap<UUID, Product>> = this.productService.mapAllAvailableById(selectedProductsIds).cache()
 
-        val inexistentProductIds = this.productService.getInexistentProducts(selectedProductsIds, productIdMap)
-        if (inexistentProductIds.isNotEmpty()) {
-            throw InvalidInputException("The following products doesn't exists or is not available: $inexistentProductIds")
-        }
+        val createdPurchase = Purchase()
 
-        val createdPurchase = Purchase(purchasedProducts = mutableListOf())
+        return verifyIfInexistentProductIsSelected(selectedProductsIds, productIdMapMono)
+            .onErrorStop()
+            .then(Mono.just(createdPurchase))
+            .zipWith( //Create a tuple with createdPurchased and the purchasedProducts
+                productIdMapMono.map { productIdMap ->
+                    val purchasedProducts = ArrayList<PurchasedProduct>(selectedProductsIds.size)
 
-        for (selectedProduct in newPurchase.selectedProducts) {
-            productIdMap[selectedProduct.id]?.let {
-                createdPurchase.purchasedProducts.add(PurchasedProduct(
-                        purchase = createdPurchase,
-                        product = it,
-                        quantity = selectedProduct.quantity.coerceAtMost(it.availableQuantity)
-                ))
+                    for (selectedProduct in newPurchase.selectedProducts) {
+                        productIdMap[selectedProduct.id]?.let { productFound ->
+                            purchasedProducts.add(
+                                PurchasedProduct.from(
+                                    purchase = createdPurchase,
+                                    product = productFound,
+                                    quantity = selectedProduct.quantity.coerceAtMost(productFound.availableQuantity)
+                                )
+                            )
+                        }
+                    }
+
+                    createdPurchase.calculateTotals(purchasedProducts)
+                    return@map purchasedProducts
+                }
+            ).flatMap {tupleWithPurchaseAndItsProducts ->
+                val purchasedProducts = tupleWithPurchaseAndItsProducts.t2
+                return@flatMap purchaseInsertRepository.insert(createdPurchase)
+                    .then(
+                        this.purchasedProductInsertRepository.insert(purchasedProducts)
+                            .then(this.productService.subtractStockQuantities(purchasedProducts))
+                    )
+                    .thenReturn(createdPurchase)
             }
-        }
 
-        createdPurchase.calculateTotals()
+    }
 
-        this.purchaseRepository.save(createdPurchase)
-
-        this.productService.subtractStockQuantities(createdPurchase.purchasedProducts)
-
-        return createdPurchase
+    private fun verifyIfInexistentProductIsSelected(selectedProductsIds: Collection<UUID>, productIdMap: Mono<MutableMap<UUID, Product>>): Mono<Unit> {
+        return this.productService.getInexistentProducts(selectedProductsIds, productIdMap)
+            .collectList()
+            .map {inexistentProductIds ->
+                if (!CollectionUtils.isEmpty(inexistentProductIds)) {
+                    throw InvalidInputException("The following products doesn't exists or aren't available: $inexistentProductIds")
+                }
+            }
     }
 
 }

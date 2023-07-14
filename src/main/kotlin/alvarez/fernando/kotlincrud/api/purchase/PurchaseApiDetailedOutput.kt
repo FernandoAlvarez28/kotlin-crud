@@ -15,14 +15,14 @@ data class PurchaseApiDetailedOutput (
         val id: UUID,
         val totalValue: BigDecimal,
         val purchasedAtMs: Long,
-        val purchasedProducts: List<PurchasedProductApiOutput>
+        val purchasedProducts: List<PurchasedProductApiOutput> //Should be Flux<PurchasedProductApiOutput> ?
 ) {
 
-    constructor(purchase: Purchase) : this(
+    constructor(purchase: Purchase, purchasedProducts: Collection<PurchasedProduct>) : this(
             id = purchase.id,
             totalValue = purchase.totalValue,
             purchasedAtMs = purchase.purchasedAt.toEpochMilli(),
-            purchasedProducts = PurchasedProductApiOutput.from(purchase.purchasedProducts)
+            purchasedProducts = PurchasedProductApiOutput.from(purchasedProducts)
     )
 }
 
@@ -32,9 +32,9 @@ data class PurchaseApiDetailedOutput (
 data class PurchasedProductApiOutput(val id: UUID, val name: String, val unitPrice: BigDecimal, val quantity: Int, val paidPrice: BigDecimal) {
 
     constructor(purchasedProduct: PurchasedProduct) : this(
-            id = purchasedProduct.product.id,
-            name = purchasedProduct.product.name,
-            unitPrice = purchasedProduct.product.unitPrice,
+            id = purchasedProduct.productId,
+            name = purchasedProduct.productName,
+            unitPrice = purchasedProduct.unitPrice,
             quantity = purchasedProduct.quantity,
             paidPrice = purchasedProduct.paidPrice,
     )

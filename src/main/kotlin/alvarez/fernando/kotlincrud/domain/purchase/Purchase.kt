@@ -1,13 +1,14 @@
 package alvarez.fernando.kotlincrud.domain.purchase
 
-import jakarta.persistence.*
+import org.springframework.data.annotation.Id
+import org.springframework.data.relational.core.mapping.Table
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.*
 
-@Entity
+@Table
 class Purchase (
-        //"Purchase" and not "Order" to not conflict with DB keywords
+        //Named "Purchase" and not "Order" to not conflict with DB keywords
 
         @Id
         var id: UUID = UUID.randomUUID(),
@@ -15,16 +16,15 @@ class Purchase (
         var totalProducts: Int = 0,
         var purchasedAt: LocalDateTime = LocalDateTime.now(),
 
-        @OneToMany(mappedBy = "purchase", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-        var purchasedProducts: MutableList<PurchasedProduct>
+        //Spring Data R2DBC doesn't support @OneToMany to map the PurchasedProducts :(
 
 ) {
 
-    fun calculateTotals() {
-        this.totalProducts = this.purchasedProducts.size
+    fun calculateTotals(purchasedProducts: Collection<PurchasedProduct>) {
+        this.totalProducts = purchasedProducts.size
         this.totalValue = BigDecimal.ZERO
 
-        for (purchasedProduct in this.purchasedProducts) {
+        for (purchasedProduct in purchasedProducts) {
             this.totalValue = this.totalValue.add(purchasedProduct.paidPrice)
         }
     }

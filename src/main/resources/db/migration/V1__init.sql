@@ -1,1 +1,1 @@
-CREATE SCHEMA kotlin_crud;
+CREATE SCHEMA IF NOT EXISTS kotlin_crud;
