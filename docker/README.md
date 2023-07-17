@@ -15,7 +15,7 @@ To serve fake generated users to be used on login.
 - Run the [./start-mockoon.sh](./start-mockoon.sh) script from your terminal.
   - Or start manually via [docker-compose](https://docs.docker.com/compose/): `sudo docker-compose up mockoon`
     - Feel free to use `-d` or any other command that does the same thing.
-- The [Postman collection](../docs/Fernando's Kotlin CRUD.postman_collection.json)+[environment](../docs/Fernando's Kotlin CRUD.postman_environment.json) also have the mocked endpoints.
+- The [Postman collection](../docs/fernandos-kotlin-crud.postman_collection.json) + [environment](../docs/fernandos-kotlin-crud.postman_environment.json) also have the mocked endpoints.
 
 ## Postgres
 I's one of the most used relational databases.

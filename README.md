@@ -9,7 +9,7 @@ Small project to experiment and learn Kotlin and other libraries.
 ## Contains/Uses
 - **Java 17**.
 - Basic REST API endpoints with **Kotlin**, **Spring Boot 3.1.1** and **Spring WebFlux**.
-  - Check/Import the [Postman collection](docs/Fernando's Kotlin CRUD.postman_collection.json) + [environment](docs/Fernando's Kotlin CRUD.postman_environment.json).
+  - Check/Import the [Postman collection](docs/fernandos-kotlin-crud.postman_collection.json) + [environment](docs/fernandos-kotlin-crud.postman_environment.json).
 - **PostgreSQL database** via Docker with **Flyway** migration.
   - Connection informations [here](docker/README.md#postgres).
 - **Spring Data R2DBC** (reactive driver for relational databases, similar to JPA).
@@ -24,6 +24,6 @@ Small project to experiment and learn Kotlin and other libraries.
 4. Run the [dockerized Mockoon](docker/README.md#mockoon).
 5. Run [KotlincrudApplication.kt](src/main/kotlin/alvarez/fernando/kotlincrud/KotlincrudApplication.kt).
 6. Access the endpoints exposed at http://localhost:8080.
-   1. Use the available [Postman collection](docs/Fernando's Kotlin CRUD.postman_collection.json) + [environment](docs/Fernando's Kotlin CRUD.postman_environment.json).
+   1. Use the available [Postman collection](docs/fernandos-kotlin-crud.postman_collection.json) + [environment](docs/fernandos-kotlin-crud.postman_environment.json).
    2. Use the login endpoint to generate a JWT token; it will be save on your active environment and used by the other endpoints.
 
