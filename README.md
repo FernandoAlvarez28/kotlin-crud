@@ -1,5 +1,7 @@
-# kotlin-crud
+# Kotlin CRUD w/ PostgreSQL
 Small project to experiment and learn Kotlin and other libraries.
+
+There is also a CRUD with MongoDB: https://github.com/FernandoAlvarez28/kotlin-crud-mongodb
 
 ## Requirements
 - **Java 17**.
@@ -16,6 +18,7 @@ Small project to experiment and learn Kotlin and other libraries.
 - **Spring Security** with **JWT** and **Spring WebFlux**.
   - Based on [soasada's guide](https://github.com/soasada/kotlin-coroutines-webflux-security).
 - Fake "Users API" with **Mockoon** via Docker.
+- Load test with **K6** via Docker.
 
 ## How to run
 1. Clone this repository.

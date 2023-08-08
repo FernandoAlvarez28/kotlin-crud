@@ -1,1 +1,1 @@
-sudo docker-compose up mockoon
+docker-compose up mockoon

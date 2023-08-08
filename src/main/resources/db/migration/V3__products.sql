@@ -21,3 +21,4 @@ INSERT INTO kotlin_crud.PRODUCT (name, unit_price, available_quantity) VALUES ('
 INSERT INTO kotlin_crud.PRODUCT (name, unit_price, available_quantity) VALUES ('Sonic Stopstation 5', 539.99, 200);
 INSERT INTO kotlin_crud.PRODUCT (name, unit_price, available_quantity) VALUES ('Macrosoft Xcrate One', 249.99, 360);
 INSERT INTO kotlin_crud.PRODUCT (name, unit_price, available_quantity) VALUES ('Nashi Pear YouPhone', 899.00, 15); --Nashi pear is a fruit visually similar to an apple
+INSERT INTO kotlin_crud.PRODUCT (name, unit_price, available_quantity) VALUES ('Air', 0.01, 2147483647); --To test with K6

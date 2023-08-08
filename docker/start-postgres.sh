@@ -1,1 +1,1 @@
-sudo docker-compose up postgres
+docker-compose up postgres
