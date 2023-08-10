@@ -17,6 +17,23 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    # https://github.com/docker/metadata-action
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        images: |
+          ${{ secrets.DOCKERHUB_USERNAME }}/kotlincrud-postgres
+        tags: |
+          type=schedule
+          type=ref,event=branch
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=semver,pattern={{major}}
+          type=sha
+        flavor: |
+         latest=true
     
     - name: Build and push
       uses: docker/build-push-action@v4
@@ -24,6 +41,10 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: |
-          ${{ secrets.DOCKERHUB_USERNAME }}/kotlincrud-postgres:$(date +%s)
-          ${{ secrets.DOCKERHUB_USERNAME }}/kotlincrud-postgres:latest
+        with:
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            BUILDTIME=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
+            VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
+            REVISION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}

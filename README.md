@@ -9,6 +9,7 @@ There is also a CRUD with MongoDB: https://github.com/FernandoAlvarez28/kotlin-c
 
 ## Contains/Uses
 - **Java 17**.
+- [Dockerfile](Dockerfile) and GitHub Actions to publish on Docker Hub.
 - Basic REST API endpoints with **Kotlin**, **Spring Boot 3.1.1** and **Spring WebFlux**.
   - Check/Import the [Postman collection](docs/fernandos-kotlin-crud.postman_collection.json) + [environment](docs/fernandos-kotlin-crud.postman_environment.json).
 - **PostgreSQL database** via Docker with **Flyway** migration.
