@@ -2,11 +2,29 @@ version: '3.4'
 
 services:
 
+  kotlincrud-postgres:
+    container_name: kotlincrud-postgres
+    image: kotlincrud-postgres:latest
+    build:
+      dockerfile: Dockerfile
+      context: ./../
+    environment:
+      - APP_DATABASE_HOST=postgres
+      - APP_DATABASE_PORT=5432
+      - APP_DATABASE_NAME=kotlin_crud
+      - APP_DATABASE_SCHEMA=kotlin_crud
+      - APP_DATABASE_USERNAME=postgres
+      - APP_DATABASE_PASSWORD=blue-elephant
+      - USERS_API_MOCKOON_URL=http://mockoon:8180
+    depends_on:
+      - mockoon
+      - postgres
+    ports:
+      - "8080:8080"
+
   mockoon:
     image: mockoon/cli
     command: -p 8180 -d /config/users-api.json
-    networks:
-      - mockoon
     ports:
       - "8180:8180"
     volumes:
@@ -17,6 +35,7 @@ services:
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "blue-elephant" #Postgres's logo is an elephant :P
+      POSTGRES_DB: "kotlin_crud"
     ports:
       - "65432:5432" #Different port to not conflict with any possible real/default Postgres installation
 
@@ -64,8 +83,6 @@ services:
       - "host.docker.internal:host-gateway"
 
 networks:
-  mockoon:
-    driver: bridge
   k6:
     driver: bridge
   grafana:

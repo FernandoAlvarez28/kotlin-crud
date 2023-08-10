@@ -2,6 +2,19 @@
 Some services that are used by this application are served via [Docker](https://www.docker.com/) to make easy
 running without having to install everything locally.
 
+## kotlincrud-postgres
+The image of this application itself. There is a [Dockerfile](../Dockerfile) to build it, and it's defined in the [docker-compose](docker-compose.yml) along with its dependencies ([Mockoon](#mockoon) and [Postgres](#postgres)).
+
+### How to run
+1. Build and run the image with one of the following commands:
+   - [./build-start-application.sh](./build-start-application.sh) script from your terminal.
+     - Or manually via [docker-compose](https://docs.docker.com/compose/):
+       ```shell
+       $ docker-compose up --build kotlincrud-postgres
+        ```
+     - It will also run [Mockoon](#mockoon) and [Postgres](#postgres) that are explained below.
+   - [Makefile](../Makefile) that basically does the same thing as above.
+
 ## Mockoon
 It's a small server that mocks REST APIs with custom data and configurations from a YAML file.
 It has a GUI software to guide building this configuration file and also a CLI and Docker image.
