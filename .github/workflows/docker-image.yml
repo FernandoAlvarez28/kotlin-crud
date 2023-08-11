@@ -34,11 +34,20 @@ jobs:
           type=sha
         flavor: |
          latest=true
-    
+
+     # Setup hardware emulator using QEMU
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2
+
+    # Setup Docker Buildx for multi-arch images
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
     - name: Build and push
       uses: docker/build-push-action@v4
       with:
         context: .
+        platforms: linux/amd64, linux/arm64
         file: ./Dockerfile
         push: true
         tags: ${{ steps.meta.outputs.tags }}
