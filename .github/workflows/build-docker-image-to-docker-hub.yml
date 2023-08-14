@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Docker Hub Image CI
 
 on:
   push:
@@ -6,6 +6,7 @@ on:
 
 jobs:
   build:
+    name: Build and publish to Docker Hub
     runs-on: ubuntu-latest
 
     steps:
