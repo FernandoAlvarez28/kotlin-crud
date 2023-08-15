@@ -1,8 +1,7 @@
 name: Docker Hub Image CI
 
 on:
-  push:
-    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   build:
