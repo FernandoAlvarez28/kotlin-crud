@@ -43,7 +43,6 @@ jobs:
       uses: docker/metadata-action@v4
       with:
         images: |
-          ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}
           ${{ steps.login-ecr.outputs.registry }}/${{ env.APP_NAME }}
         tags: |
           type=schedule
@@ -71,6 +70,7 @@ jobs:
         platforms: linux/amd64, linux/arm64
         file: ./Dockerfile
         push: true
+        provenance: false
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         build-args: |
