@@ -1,0 +1,97 @@
+name: Docker Hub Image CI
+
+on:
+#  push:
+#    branches: [ "main" ]
+  workflow_dispatch:
+
+
+env:
+  APP_NAME: "kotlincrud-pg"
+  ECS_SERVICE: "kotlincrud-pg-prod-ecs"
+  ECS_CLUSTER: "kotlincrud-pg-prod-cluster"
+  ECS_TASK_DEFINITION_PATH: ".aws/ecs-task.definition.json"
+
+jobs:
+  deploy:
+    name: Deploy to ECR
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    # https://github.com/marketplace/actions/configure-aws-credentials-for-github-actions
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ vars.AWS_REGION }}
+
+    # https://github.com/marketplace/actions/amazon-ecr-login-action-for-github-actions
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+      with:
+        mask-password: 'true'
+    
+    # https://github.com/docker/metadata-action
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        images: |
+          ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}
+          ${{ secrets.ECR_NAME }}/${{ env.APP_NAME }}
+        tags: |
+          type=schedule
+          type=ref,event=branch
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=semver,pattern={{major}}
+          type=sha
+        flavor: |
+         latest=true
+
+    # Setup hardware emulator using QEMU
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2
+
+    # Setup Docker Buildx for multi-arch images
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Build and push
+      id: build-image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        platforms: linux/amd64, linux/arm64
+        file: ./Dockerfile
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        build-args: |
+          BUILDTIME=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
+          VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
+          REVISION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
+
+    # "Modify" the existing task-definition.json to insert the created image
+    # https://github.com/marketplace/actions/amazon-ecs-render-task-definition-action-for-github-actions
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: ${{ env.ECS_TASK_DEFINITION_PATH }}
+        container-name: ${{ env.APP_NAME }}
+        image: ${{ steps.build-image.outputs.image }}
+
+    # https://github.com/marketplace/actions/amazon-ecs-deploy-task-definition-action-for-github-actions
+    - name: Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
+      with:
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        service: ${{ env.ECS_SERVICE }}
+        cluster: ${{ env.ECS_CLUSTER }}
+        wait-for-service-stability: true
