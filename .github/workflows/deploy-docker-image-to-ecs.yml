@@ -35,6 +35,7 @@ jobs:
       uses: aws-actions/amazon-ecr-login@v1
       with:
         mask-password: 'true'
+        registry-type: 'private'
     
     # https://github.com/docker/metadata-action
     - name: Docker meta
@@ -43,7 +44,7 @@ jobs:
       with:
         images: |
           ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}
-          ${{ secrets.ECR_NAME }}/${{ env.APP_NAME }}
+          ${{ steps.login-ecr.outputs.registry }}/${{ env.APP_NAME }}
         tags: |
           type=schedule
           type=ref,event=branch
