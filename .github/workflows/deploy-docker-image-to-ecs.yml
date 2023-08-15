@@ -1,4 +1,4 @@
-name: Docker Hub Image CI
+name: ECR and ECS Deploy CI
 
 on:
 #  push:
