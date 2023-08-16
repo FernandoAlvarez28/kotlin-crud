@@ -84,7 +84,7 @@ jobs:
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
         task-definition: ${{ env.ECS_TASK_DEFINITION_PATH }}
-        container-name: ${{ env.APP_NAME }}
+        container-name: app
         image: ${{ steps.build-image.outputs.imageid }}
 
     # https://github.com/marketplace/actions/amazon-ecs-deploy-task-definition-action-for-github-actions
