@@ -9,7 +9,8 @@ env:
   ECR_NAME: "kotlincrud-pg-prod"
   ECS_SERVICE: "kotlincrud-pg-prod-ecs"
   ECS_CLUSTER: "kotlincrud-pg-prod-cluster"
-  ECS_TASK_DEFINITION_PATH: ".aws/ecs-task.definition.json"
+  ECS_TASK_DEFINITION_FAMILY: "kotlincrud-pg-prod"
+  ECS_TASK_DEFINITION_FILE: "ecs-task-definition.json"
 
 jobs:
   deploy:
@@ -78,13 +79,18 @@ jobs:
           VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
           REVISION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
 
+    # Download the Task Definition created via Terraform to create the ECS
+    - name: Download the existing Amazon ECS task definition
+      run: |
+        aws ecs describe-task-definition --task-definition $ECS_TASK_DEFINITION_FAMILY --query taskDefinition > $ECS_TASK_DEFINITION_FILE
+
     # "Modify" the existing task-definition.json to insert the created image
     # https://github.com/marketplace/actions/amazon-ecs-render-task-definition-action-for-github-actions
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
-        task-definition: ${{ env.ECS_TASK_DEFINITION_PATH }}
+        task-definition: ${{ env.ECS_TASK_DEFINITION_FILE }}
         container-name: app
         image: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
 
