@@ -6,6 +6,7 @@ on:
 
 env:
   APP_NAME: "kotlincrud-pg"
+  ECR_NAME: "kotlincrud-pg-prod"
   ECS_SERVICE: "kotlincrud-pg-prod-ecs"
   ECS_CLUSTER: "kotlincrud-pg-prod-cluster"
   ECS_TASK_DEFINITION_PATH: ".aws/ecs-task.definition.json"
@@ -41,7 +42,7 @@ jobs:
       uses: docker/metadata-action@v4
       with:
         images: |
-          ${{ steps.login-ecr.outputs.registry }}/${{ env.APP_NAME }}
+          ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_NAME }}
         tags: |
           type=schedule
           type=ref,event=branch
