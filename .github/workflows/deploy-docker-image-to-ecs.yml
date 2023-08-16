@@ -85,7 +85,7 @@ jobs:
       with:
         task-definition: ${{ env.ECS_TASK_DEFINITION_PATH }}
         container-name: ${{ env.APP_NAME }}
-        image: ${{ steps.build-image.outputs.image }}
+        image: ${{ steps.build-image.outputs.imageid }}
 
     # https://github.com/marketplace/actions/amazon-ecs-deploy-task-definition-action-for-github-actions
     - name: Deploy Amazon ECS task definition
