@@ -213,6 +213,9 @@
 		{
 			"name": "Root",
 			"request": {
+				"auth": {
+					"type": "noauth"
+				},
 				"method": "GET",
 				"header": [],
 				"url": {
@@ -230,6 +233,9 @@
 		{
 			"name": "Health check",
 			"request": {
+				"auth": {
+					"type": "noauth"
+				},
 				"method": "GET",
 				"header": [],
 				"url": {
