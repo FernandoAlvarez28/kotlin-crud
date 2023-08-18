@@ -209,6 +209,40 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Root",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{appUrl}}/",
+					"host": [
+						"{{appUrl}}"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Health check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{appUrl}}/health-check",
+					"host": [
+						"{{appUrl}}"
+					],
+					"path": [
+						"health-check"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"auth": {

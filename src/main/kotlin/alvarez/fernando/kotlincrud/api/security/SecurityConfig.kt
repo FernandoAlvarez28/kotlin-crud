@@ -33,7 +33,8 @@ class SecurityConfig {
             .csrf { csrf -> csrf.disable() }
             .logout { logout -> logout.disable() }
             .authorizeExchange { exchanges -> exchanges
-                .anyExchange().access(jwtAuthorizationManager) //Matcher that adds an access rule manager for any request
+                .pathMatchers(*ApiEndpoints.PUBLIC).permitAll()
+                .pathMatchers("/api/**").access(jwtAuthorizationManager) //Matcher that adds an access rule manager for any endpoint under "/api"
             }
             .addFilterAt(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
             .securityContextRepository(NoOpServerSecurityContextRepository.getInstance()) //Don't store sessions
