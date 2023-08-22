@@ -33,6 +33,13 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.flywaydb:flyway-core")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
+	// https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-aws-parameter-store-config
+	implementation("org.springframework.cloud:spring-cloud-starter-aws-parameter-store-config:2.2.6.RELEASE")
+	// https://mvnrepository.com/artifact/io.awspring.cloud/spring-cloud-starter-aws-secrets-manager-config
+	implementation("io.awspring.cloud:spring-cloud-starter-aws-secrets-manager-config:2.4.4")
+	// https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-bootstrap
+	// https://stackoverflow.com/questions/66807577/access-aws-paramstore-from-springboot-app
+	implementation("org.springframework.cloud:spring-cloud-starter-bootstrap:4.0.4")
 	runtimeOnly("io.r2dbc:r2dbc-postgresql:0.8.13.RELEASE")
 	runtimeOnly("io.r2dbc:r2dbc-pool")
 	runtimeOnly("org.postgresql:postgresql") {
